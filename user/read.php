@@ -4,6 +4,7 @@
 
   // get database connection
   include_once("../config/database.php");
+
   // get model
   include_once("../model/user.php");
   
@@ -11,7 +12,7 @@
   $database = new Database();
 
   // get connection from database
-  $db = $database.getConnection();
+  $db = $database->getConnection();
 
   // create object user with database connection
   $user = new User($db);
@@ -28,9 +29,9 @@
       extract($row);
       $user_item = array(
         "username" => $username,
-        "firstname" => $firstname,
-        "lastname" => $lastname,
-        "email" => $email,
+        "created_at" => $created_at,
+        "updated_at" => $updated_at,
+        "role" => $role,
       );
 
       array_push($user_arr["data"], $user_item);
