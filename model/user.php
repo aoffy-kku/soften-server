@@ -13,23 +13,54 @@
     public $created_at;
     public $updated_at;
     public $enabled;
+    public $point;
 
     public function __construct($db) {
       $this->conn = $db;
     }
 
-    // add your function ex. findAll, findById, createUser
     public function read() {
       $query = "SELECT * FROM user";
       $stmt = $this->conn->prepare($query);
-      $stmt->execute();
-      return $stmt;
+      try {
+        $stmt->execute();
+        $rows = $stmt->rowCount();
+
+        if($rows > 0) {
+          $user_arr = array();
+          $user_arr["success"] = true;
+          $user_arr["data"]  = array();
+
+          while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            extract($row);
+            $user_item = array(
+              "username" => $username,
+              "created_at" => $created_at,
+              "updated_at" => $updated_at,
+              "point" => $point,
+              "role" => $role,
+            );
+            array_push($user_arr["data"], $user_item);
+          }
+          return json_encode($user_arr);
+        } else {
+          return json_encode(array(
+            "success" => true,
+            "message" => "user is empty.",
+          ));
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => true,
+          "message" => $e,
+        ));
+      }
     }
 
     public function create() {
       $query = "INSERT INTO " 
         .$this->table_name. 
-        " (username, password, personal_id) VALUES (:username, :password, :personal_id)";
+        " (username, password, personal_id, created_at, updated_at) VALUES (:username, :password, :personal_id, NOW(), NOW()";
       
       $stmt = $this->conn->prepare($query);
 
@@ -45,7 +76,7 @@
         $stmt->execute();
         return json_encode(array(
           "success" => true,
-          "data" => $stmt->rowCount(),
+          "data" => $stmt->rowCount(). " row(s) inserted.",
         ));
       } catch(PDOExeption $e){
         return json_encode(array(

@@ -17,14 +17,5 @@
     $user->personal_id = $_POST["personal_id"];
     
     $result = $user->create();
-    if($result === true) {
-        echo json_encode(array(
-            "success" => true,
-        ));
-    } else {
-        echo json_encode(array(
-            "success" => false,
-            "message" => $result,
-        ));
-    }  
+    echo $result;
 ?>

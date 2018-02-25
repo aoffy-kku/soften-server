@@ -1,17 +1,10 @@
 <?php
   class Database {
-    private $host;
-    private $db_name;
-    private $username;
-    private $password;
+    private $host = "10.199.66.227";
+    private $db_name = "sec01_nmb";
+    private $username = "Sec01_NMB";
+    private $password = "B89tN0b1";
     public $conn;
-
-    public function __contruct() {
-      $this->host = "10.199.66.227";
-      $this->db_name = "sec01_nmb";
-      $this->username = "Sec01_NMB";
-      $this->password = "B89tN0b1";
-    }
 
     public function getConnection() {
       $this->conn = null;

@@ -17,30 +17,8 @@
   // create object user with database connection
   $user = new User($db);
 
-  $stmt = $user->read();
-  $rows = $stmt->rowCount();
-
-  if($rows > 0) {
-    $user_arr = array();
-    $user_arr["success"] = true;
-    $user_arr["data"]  = array();
-
-    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      extract($row);
-      $user_item = array(
-        "username" => $username,
-        "created_at" => $created_at,
-        "updated_at" => $updated_at,
-        "role" => $role,
-      );
-
-      array_push($user_arr["data"], $user_item);
-    }
-    echo json_encode($user_arr);
-  } else {
-    echo json_encode(array(
-      "success" => false,
-    ));
-  }
+  $result = $user->read();
+  
+  echo $result;
 
 ?>
