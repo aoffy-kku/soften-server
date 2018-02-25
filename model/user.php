@@ -43,12 +43,12 @@
 
       try {
         $stmt->execute();
-        return echo json_encode(array(
+        return json_encode(array(
           "success" => true,
-          "data" => $stmt->rowCount();
+          "data" => $stmt->rowCount(),
         ));
       } catch(PDOExeption $e){
-        return echo json_encode(array(
+        return json_encode(array(
           "success" => false,
           "message" => $e,
         ));
