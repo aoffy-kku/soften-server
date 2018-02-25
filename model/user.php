@@ -29,7 +29,7 @@
         if($rows > 0) {
           $user_arr = array();
           $user_arr["success"] = true;
-          $user_arr["data"]  = array();
+          $user_arr["message"]  = array();
 
           while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             extract($row);
@@ -40,7 +40,7 @@
               "point" => $point,
               "role" => $role,
             );
-            array_push($user_arr["data"], $user_item);
+            array_push($user_arr["message"], $user_item);
           }
           return json_encode($user_arr);
         } else {
@@ -76,7 +76,7 @@
         $stmt->execute();
         return json_encode(array(
           "success" => true,
-          "data" => $stmt->rowCount(). " row(s) inserted.",
+          "message" => $stmt->rowCount(). " row(s) inserted.",
         ));
       } catch(PDOExeption $e){
         return json_encode(array(
@@ -110,7 +110,7 @@
           if($password === $this->password) {
             return json_encode(array(
               "success" => true,
-              "data" => array(
+              "message" => array(
                 "username" => $username,
                 "role" => $role,
               ),
