@@ -9,7 +9,7 @@
     public $username;
     public $password;
     public $personal_id;
-    public $role;
+    public $admin;
     public $created_at;
     public $updated_at;
     public $enabled;
