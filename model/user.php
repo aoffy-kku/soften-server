@@ -14,6 +14,7 @@
     public $updated_at;
     public $enabled;
     public $point;
+    public $token;
 
     public function __construct($db) {
       $this->conn = $db;
@@ -45,13 +46,13 @@
           return json_encode($user_arr);
         } else {
           return json_encode(array(
-            "success" => true,
+            "success" => false,
             "message" => "user is empty.",
           ));
         }
       } catch(PDOException $e) {
         return json_encode(array(
-          "success" => true,
+          "success" => false,
           "message" => $e,
         ));
       }
@@ -110,10 +111,7 @@
           if($password === $this->password) {
             return json_encode(array(
               "success" => true,
-              "message" => array(
-                "username" => $username,
-                "role" => $role,
-              ),
+              "message" => $token,
             ));
           } else {
             return json_encode(array(
@@ -121,6 +119,44 @@
               "message" => "password not correct.",
             ));
           }
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
+    public function checkAuth() {
+      $query = "SELECT * FROM "
+        .$this->table_name.
+      " WHERE token = :token";
+
+      $stmt = $this->conn->prepare($query);
+
+      $this->username=htmlspecialchars(strip_tags($this->token));
+      $stmt->bindParam(":token", trim($this->token));
+
+      try {
+        $stmt->execute();
+        $finduser = $stmt->rowCount();
+        if($finduser === 0) {
+          return json_encode(array(
+            "success" => false,
+            "message" => "username not correct.",
+          ));
+        } else {
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          return json_encode(array(
+            "success" => true,
+            "message" => array(
+              "username" => $username,
+              "admin" => $admin,
+              "point" => $point,
+            ),
+          ));
         }
       } catch(PDOException $e) {
         return json_encode(array(
