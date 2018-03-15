@@ -15,7 +15,14 @@
     $user->username = $_POST["username"];
     $user->password = $_POST["password"];
     $user->personal_id = $_POST["personal_id"];
-    
+    $user->personal_image = $_POST["personal_image"];
+    $user->flname = $_POST["flname"];
+    $user->email = $_POST["email"];
+    $user->birthday = $_POST["birthday"];
+    $user->answer1 = $_POST["answer1"];
+    $user->answer2 = $_POST["answer2"];
+    $user->answer3 = $_POST["answer3"];
+   
     $result = $user->create();
     echo $result;
 ?>

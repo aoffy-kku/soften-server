@@ -15,6 +15,13 @@
     public $enabled;
     public $point;
     public $token;
+    public $personal_image;
+    public $flname;
+    public $email;
+    public $birthday ;
+    public $answer1 ;
+    public $answer2 ;
+    public $answer3 ;
 
     public function __construct($db) {
       $this->conn = $db;
@@ -61,18 +68,32 @@
     public function create() {
       $query = "INSERT INTO " 
         .$this->table_name. 
-        " (username, password, personal_id, created_at, updated_at) VALUES (:username, :password, :personal_id, NOW(), NOW()";
+        " (username, password, personal_id, personal_image, flname, email, birthday, answer1, answer2, answer3, created_at, updated_at) VALUES (:username, :password, :personal_id, :personal_image, :flname, :email, :birthday, :answer1, :answer2, :answer3, NOW(), NOW()";
       
       $stmt = $this->conn->prepare($query);
 
       $this->username=htmlspecialchars(strip_tags($this->username));
       $this->password=htmlspecialchars(strip_tags($this->password));
       $this->personal_id=htmlspecialchars(strip_tags($this->personal_id));
+      $this->personal_image=htmlspecialchars(strip_tags($this->personal_image));
+      $this->flname=htmlspecialchars(strip_tags($this->flname));
+      $this->email=htmlspecialchars(strip_tags($this->email));
+      $this->birthday=htmlspecialchars(strip_tags($this->birthday));
+      $this->answer1=htmlspecialchars(strip_tags($this->answer1));
+      $this->answer2=htmlspecialchars(strip_tags($this->answer2));
+      $this->answer3=htmlspecialchars(strip_tags($this->answer3));
 
       $stmt->bindParam(":username", $this->username);
       $stmt->bindParam(":password", $this->password);
       $stmt->bindParam(":personal_id", $this->personal_id);
-
+      $stmt->bindParam(":personal_image", $this->personal_image);
+      $stmt->bindParam(":flname", $this->flname);
+      $stmt->bindParam(":email", $this->email);
+      $stmt->bindParam(":birthday", $this->birthday);
+      $stmt->bindParam(":answer1", $this->answer1);
+      $stmt->bindParam(":answer2", $this->answer2);
+      $stmt->bindParam(":answer3", $this->answer3);
+      
       try {
         $stmt->execute();
         return json_encode(array(
