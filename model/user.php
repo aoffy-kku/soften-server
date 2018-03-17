@@ -66,10 +66,11 @@
     }
 
     public function create() {
-      $query = "INSERT INTO " 
-        .$this->table_name. 
-        " (username, password, personal_id, personal_image, flname, email, birthday, answer1, answer2, answer3, created_at, updated_at) VALUES (:username, :password, :personal_id, :personal_image, :flname, :email, :birthday, :answer1, :answer2, :answer3, NOW(), NOW()";
-      
+      $query = "INSERT INTO `user` 
+      (`username`, `password`, `personal_id`, `personal_image`, `flname`, `email`, `birthday`, `answer1`, `answer2`, `answer3`, `created_at`, `updated_at`) 
+      VALUES 
+      (:username, :password, :personal_id, :personal_image, :flname, :email, :birthday, :answer1, :answer2, :answer3, NOW(), NOW())";
+        
       $stmt = $this->conn->prepare($query);
 
       $this->username=htmlspecialchars(strip_tags($this->username));

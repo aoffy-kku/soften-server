@@ -22,6 +22,16 @@
     $user->answer1 = $_POST["answer1"];
     $user->answer2 = $_POST["answer2"];
     $user->answer3 = $_POST["answer3"];
+
+    echo "<br>" .$user->username;
+    echo "<br>" .$user->personal_id;
+    echo "<br>" .$user->personal_image;
+    echo "<br>" .$user->flname;
+    echo "<br>" .$user->email;     
+    echo "<br>" .$user->birthday;
+    echo "<br>" .$user->answer1;
+    echo "<br>" .$user->answer2;
+    echo "<br>" .$user->answer3;
    
     $result = $user->create();
     echo $result;
