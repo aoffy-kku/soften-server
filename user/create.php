@@ -10,34 +10,22 @@
     $user = new User($db);
 
     // get posted data
-    // $data = json_decode(file_get_contents("php://input"));
-    // print_r($data);
-    $user->username = $_POST["username"];
-    $user->password = $_POST["password"];
-    $user->personal_id = $_POST["personal_id"];
-    $user->personal_image = $_POST["personal_image"];
-    $user->flname = $_POST["flname"];
-    $user->email = $_POST["email"];
-    $user->birthday = $_POST["birthday"];
-    $user->answer1 = $_POST["question1"];
-    $user->answer1 = $_POST["answer1"];
-    $user->answer1 = $_POST["question2"];
-    $user->answer2 = $_POST["answer2"];
-    $user->answer1 = $_POST["question3"];
-    $user->answer3 = $_POST["answer3"];
+    $data = json_decode(file_get_contents("php://input"));
+    $user->username = $data->username;
+    $user->password = $data->password;
+    $user->personal_id = $data->personal_id;
+    $user->personal_image = $data->personal_image;
+    $user->flname = $data->flname;
+    $user->email = $data->email;
+    $user->birthday = $data->birthday;
+    $user->question1 = $data->question1;
+    $user->answer1 = $data->answer1;
+    $user->question2 = $data->question2;
+    $user->answer2 = $data->answer2;
+    $user->question3 = $data->question3;
+    $user->answer3 = $data->answer3;
 
-    echo "<br>" .$user->username;
-    echo "<br>" .$user->personal_id;
-    echo "<br>" .$user->personal_image;
-    echo "<br>" .$user->flname;
-    echo "<br>" .$user->email;     
-    echo "<br>" .$user->birthday;
-    echo "<br>" .$user->question1;
-    echo "<br>" .$user->answer1;
-    echo "<br>" .$user->question2;
-    echo "<br>" .$user->answer2;
-    echo "<br>" .$user->question3;
-    echo "<br>" .$user->answer3;
+    
    
     $result = $user->create();
     echo $result;
