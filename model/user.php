@@ -19,8 +19,11 @@
     public $flname;
     public $email;
     public $birthday ;
+    public $question1;
     public $answer1 ;
+    public $question2;
     public $answer2 ;
+    public $question3;
     public $answer3 ;
 
     public function __construct($db) {
@@ -67,9 +70,9 @@
 
     public function create() {
       $query = "INSERT INTO `user` 
-      (`username`, `password`, `personal_id`, `personal_image`, `flname`, `email`, `birthday`, `answer1`, `answer2`, `answer3`, `created_at`, `updated_at`) 
+      (`username`, `password`, `personal_id`, `personal_image`, `flname`, `email`, `birthday`, `question1`, `answer1`, `question2`, `answer2`, `question3`, `answer3`, `created_at`, `updated_at`) 
       VALUES 
-      (:username, :password, :personal_id, :personal_image, :flname, :email, :birthday, :answer1, :answer2, :answer3, NOW(), NOW())";
+      (:username, :password, :personal_id, :personal_image, :flname, :email, :birthday, :question1, :answer1, :question2, :answer2, :question3, :answer3, NOW(), NOW())";
         
       $stmt = $this->conn->prepare($query);
 
@@ -80,8 +83,11 @@
       $this->flname=htmlspecialchars(strip_tags($this->flname));
       $this->email=htmlspecialchars(strip_tags($this->email));
       $this->birthday=htmlspecialchars(strip_tags($this->birthday));
+      $this->question1=htmlspecialchars(strip_tags($this->question1));
       $this->answer1=htmlspecialchars(strip_tags($this->answer1));
+      $this->question2=htmlspecialchars(strip_tags($this->question2));
       $this->answer2=htmlspecialchars(strip_tags($this->answer2));
+      $this->question3=htmlspecialchars(strip_tags($this->question3));
       $this->answer3=htmlspecialchars(strip_tags($this->answer3));
 
       $stmt->bindParam(":username", $this->username);
@@ -91,8 +97,11 @@
       $stmt->bindParam(":flname", $this->flname);
       $stmt->bindParam(":email", $this->email);
       $stmt->bindParam(":birthday", $this->birthday);
+      $stmt->bindParam(":question1", $this->question1);
       $stmt->bindParam(":answer1", $this->answer1);
+      $stmt->bindParam(":question2", $this->question2);
       $stmt->bindParam(":answer2", $this->answer2);
+      $stmt->bindParam(":question3", $this->question3);
       $stmt->bindParam(":answer3", $this->answer3);
       
       try {
@@ -157,7 +166,7 @@
 
       $stmt = $this->conn->prepare($query);
 
-      $this->username=htmlspecialchars(strip_tags($this->token));
+      $this->token=htmlspecialchars(strip_tags($this->token));
       $stmt->bindParam(":token", trim($this->token));
 
       try {
@@ -178,6 +187,102 @@
               "admin" => $admin,
               "point" => $point,
             ),
+          ));
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
+    public function checkUsername() {
+      $query = "SELECT * FROM "
+        .$this->table_name.
+      " WHERE username = :username";
+
+      $stmt = $this->conn->prepare($query);
+
+      $this->username=htmlspecialchars(strip_tags($this->username));
+      $stmt->bindParam(":username", trim($this->username));
+
+      try {
+        $stmt->execute();
+        $finduser = $stmt->rowCount();
+        if($finduser === 0) {
+          return json_encode(array(
+            "success" => true,
+            "message" => "username available.",
+          ));
+        } else {
+          return json_encode(array(
+            "success" => false,
+            "message" => "username not available.",
+          ));
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
+    public function checkEmail() {
+      $query = "SELECT * FROM "
+        .$this->table_name.
+      " WHERE email = :email";
+
+      $stmt = $this->conn->prepare($query);
+
+      $this->email=htmlspecialchars(strip_tags($this->email));
+      $stmt->bindParam(":email", trim($this->email));
+
+      try {
+        $stmt->execute();
+        $finduser = $stmt->rowCount();
+        if($finduser === 0) {
+          return json_encode(array(
+            "success" => true,
+            "message" => "email available.",
+          ));
+        } else {
+          return json_encode(array(
+            "success" => false,
+            "message" => "email not available.",
+          ));
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
+    public function checkPid() {
+      $query = "SELECT * FROM "
+        .$this->table_name.
+      " WHERE personal_id = :personal_id";
+
+      $stmt = $this->conn->prepare($query);
+
+      $this->personal_id=htmlspecialchars(strip_tags($this->personal_id));
+      $stmt->bindParam(":personal_id", trim($this->personal_id));
+
+      try {
+        $stmt->execute();
+        $finduser = $stmt->rowCount();
+        if($finduser === 0) {
+          return json_encode(array(
+            "success" => true,
+            "message" => "personal_id available.",
+          ));
+        } else {
+          return json_encode(array(
+            "success" => false,
+            "message" => "personal_id not available.",
           ));
         }
       } catch(PDOException $e) {
