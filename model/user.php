@@ -198,9 +198,37 @@
     }
 
     public function checkUsername() {
-      $query = "SELECT * FROM "
-        .$this->table_name.
-      " WHERE username = :username";
+      $query = "SELECT * FROM user WHERE username = :username";
+
+      $stmt = $this->conn->prepare($query);
+
+      $this->username=htmlspecialchars(strip_tags($this->username));
+      $stmt->bindParam(":username", trim($this->username));
+
+      try {
+        $stmt->execute();
+        $finduser = $stmt->rowCount();
+        if($finduser === 0) {
+          return json_encode(array(
+            "success" => true,
+            "message" => "username available.",
+          ));
+        } else {
+          return json_encode(array(
+            "success" => false,
+            "message" => "username not available.",
+          ));
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
+      public function checkUsernameForResetPW() {
+      $query = "SELECT * FROM user WHERE username = :username AND enabled = 1";
 
       $stmt = $this->conn->prepare($query);
 
@@ -292,5 +320,182 @@
         ));
       }
     }
+
+
+  public function readQuestionByUsername() {
+    $query = "SELECT * FROM "
+      .$this->table_name.
+      " WHERE username = :username AND enabled = 1";
+    $stmt = $this->conn->prepare($query);
+
+    $this->username=htmlspecialchars(strip_tags($this->username));
+    $stmt->bindParam(":username", trim($this->username));
+    try {
+      $stmt->execute();
+      $rows = $stmt->rowCount();
+
+      if($rows > 0) {
+        $user_arr = array();
+        $user_arr["success"] = true;
+        $user_arr["message"]  = array();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          $user_arr["message"] = array(
+            "username" => $username,
+            "created_at" => $created_at,
+            "updated_at" => $updated_at,
+            "point" => $point,
+            "role" => $role,
+            "question1" => $question1,
+            "question2" => $question2,
+            "question3" => $question3,
+            "email" => $email,
+          );
+        return json_encode($user_arr);
+      } else {
+        return json_encode(array(
+          "success" => false,
+          "message" => "user is empty.",
+        ));
+      }
+    } catch(PDOException $e) {
+      return json_encode(array(
+        "success" => false,
+        "message" => $e,
+      ));
+    }
+  }
+
+  public function checkAnswer() {
+      $query = "SELECT * FROM "
+        .$this->table_name.
+      " WHERE username = :username";
+
+      $stmt = $this->conn->prepare($query);
+
+      $this->username=htmlspecialchars(strip_tags($this->username)); 
+      $stmt->bindParam(":username", trim($this->username));
+      try {
+        $stmt->execute();
+        $finduser = $stmt->rowCount();
+        $resultAns1 = false;
+        $resultAns2 = false;
+        $resultAns3 = false;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        extract($row);
+
+        if($answer1 == $this->answer1) {
+          $resultAns1 = true;
+        }
+
+        if($answer2 == $this->answer2) {
+          $resultAns2 = true;
+        }
+        
+        if($answer3 == $this->answer3) {
+          $resultAns3 = true;
+        }
+
+         return json_encode(array(
+            "success" => true,
+            "message" => array(
+              "answer1" => $resultAns1,
+              "answer2" => $resultAns2,
+              "answer3" => $resultAns3,
+            )
+          ));
+
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
+    public function changePassword() {
+      $query = "UPDATE user SET `password` = :password WHERE `username` = :username";        
+      $stmt = $this->conn->prepare($query);
+
+      $this->username=htmlspecialchars(strip_tags($this->username));
+      $this->password=htmlspecialchars(strip_tags($this->password));
+
+      $stmt->bindParam(":username", trim($this->username));
+      $stmt->bindParam(":password", trim($this->password));
+
+      try {
+        $stmt->execute();
+        $row = $stmt->rowCount();
+        if($row > 0) {
+       	  $query = "SELECT * FROM `user` WHERE `username` = :username";        
+          $stmt = $this->conn->prepare($query);
+
+          $this->username=htmlspecialchars(strip_tags($this->username));;
+          $stmt->bindParam(":username", trim($this->username));
+          $stmt->execute();
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          $response = file_get_contents("https://soften-mailer.herokuapp.com/resetsuccess?receiver=".$email);
+          return json_encode(array(
+            "success" => true,
+            "message" => $response . " " . "https://soften-mailer.herokuapp.com/resetsuccess?receiver=".$email,
+          ));
+          return json_encode(array(
+            "success" => true,
+            "message" => "Password has been changed.",
+          ));
+        } else {
+          return json_encode(array(
+            "success" => false,
+            "message" => "Password cannot change.",
+          ));
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
+    public function banUser() {
+      $query = "UPDATE user SET `enabled` = 2 WHERE `username` = :username";        
+      $stmt = $this->conn->prepare($query);
+
+      $this->username=htmlspecialchars(strip_tags($this->username));;
+      $stmt->bindParam(":username", trim($this->username));
+
+      try {
+        $stmt->execute();
+        $row = $stmt->rowCount();
+        if($row > 0) {
+          $query = "SELECT * FROM `user` WHERE `username` = :username";        
+          $stmt = $this->conn->prepare($query);
+
+          $this->username=htmlspecialchars(strip_tags($this->username));;
+          $stmt->bindParam(":username", trim($this->username));
+          $stmt->execute();
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          $response = file_get_contents("https://soften-mailer.herokuapp.com/resetfail?receiver=".$email);
+          return json_encode(array(
+            "success" => true,
+            "message" => $response . " " . "https://soften-mailer.herokuapp.com/resetfail?receiver=".$email,
+          ));
+        } else {
+          return json_encode(array(
+            "success" => false,
+            "message" => "User cannot banned.",
+          ));
+        }
+      } catch(PDOException $e) {
+        return json_encode(array(
+          "success" => false,
+          "message" => $e,
+        ));
+      }
+    }
+
   }
 ?>
