@@ -14,6 +14,7 @@
 
   $user->username = $data->username;
   $user->password = $data->password;
+  $user->token = $data->token;
   
   $result = $user->changePassword();
 

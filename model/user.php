@@ -70,9 +70,9 @@
 
     public function create() {
       $query = "INSERT INTO `user` 
-      (`username`, `password`, `personal_id`, `personal_image`, `flname`, `email`, `birthday`, `question1`, `answer1`, `question2`, `answer2`, `question3`, `answer3`, `created_at`, `updated_at`) 
+      (`username`, `password`, `personal_id`, `personal_image`, `flname`, `email`, `birthday`, `question1`, `answer1`, `question2`, `answer2`, `question3`, `answer3`, `created_at`, `updated_at`, `token`) 
       VALUES 
-      (:username, :password, :personal_id, :personal_image, :flname, :email, :birthday, :question1, :answer1, :question2, :answer2, :question3, :answer3, NOW(), NOW())";
+      (:username, :password, :personal_id, :personal_image, :flname, :email, :birthday, :question1, :answer1, :question2, :answer2, :question3, :answer3, NOW(), NOW()), :token";
         
       $stmt = $this->conn->prepare($query);
 
@@ -103,6 +103,7 @@
       $stmt->bindParam(":answer2", $this->answer2);
       $stmt->bindParam(":question3", $this->question3);
       $stmt->bindParam(":answer3", $this->answer3);
+      $stmt->bindParam(":token", $this->token);
       
       try {
         $stmt->execute();
@@ -415,7 +416,7 @@
     }
 
     public function changePassword() {
-      $query = "UPDATE user SET `password` = :password WHERE `username` = :username";        
+      $query = "UPDATE user SET `password` = :password, `token` = :token WHERE `username` = :username";        
       $stmt = $this->conn->prepare($query);
 
       $this->username=htmlspecialchars(strip_tags($this->username));
@@ -423,6 +424,7 @@
 
       $stmt->bindParam(":username", trim($this->username));
       $stmt->bindParam(":password", trim($this->password));
+      $stmt->bindParam(":token", $this->token);
 
       try {
         $stmt->execute();

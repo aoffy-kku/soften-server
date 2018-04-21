@@ -24,6 +24,7 @@
     $user->answer2 = $data->answer2;
     $user->question3 = $data->question3;
     $user->answer3 = $data->answer3;
+    $user->token = $data->token;
 
     
    
